@@ -1,0 +1,19 @@
+{
+  "name": "My Shopping Extension",
+  "version": "1.0",
+  "description": "An extension to enhance your online shopping experience.",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
