@@ -4,28 +4,39 @@ function loadItems(){
         const itemsList = document.getElementById("itemsList"); // Assuming there's a <ul> or <div> with id="itemsList" in popup.html
         itemsList.innerHTML = ""; // Clear existing items
 
+        
+
         items.forEach(function(item){
             const row = document.createElement("div");
-            row.textContent = `${item.itemName} - ${item.price} - ${item.link} - ${item.tags} - ${item.notes}`;
+            row.textContent = `${item.itemName} - ${item.price}`;
             itemsList.appendChild(row);
         });
     });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+        chrome.storage.local.get("lastProduct", function (result) {
+  const product = result.lastProduct;
+  if (!product) return; // nothing to auto-fill yet
+
+  // Fill in your text boxes
+  document.getElementById("itemName").value = product.title || "";
+  document.getElementById("link").value = product.url || "";
+});
+
     loadItems(); // Load and display items when the popup is opened
   const saveButton = document.getElementById("saveButton"); // Defining the saveButton variable
 
   saveButton.addEventListener("click", function () { // Adding event listener to the save button
     // get values from the form
-    const itemName = document.getElementById("itemName").value;
+    const itemName = document.getElementById("itemName").value || "(untitled)";
     const price = document.getElementById("price").value;
     const link = document.getElementById("link").value;
     const tags = document.getElementById("tags").value;
     const notes = document.getElementById("notes").value;
 
-    // make one object that holds the data save in console
     const item = { itemName, price, link, tags, notes };
+
     console.log("Item to save:", item);
 
     // get existing list from storage, add this one, then save back
@@ -39,3 +50,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+chrome.storage.local.get("lastProduct", function(result) { // Retrieve the last saved product info
+  if (result.lastProduct) {
+    document.getElementById("itemName").value = result.lastProduct.title;
+    document.getElementById("link").value = result.lastProduct.url;
+  }
+});
+
